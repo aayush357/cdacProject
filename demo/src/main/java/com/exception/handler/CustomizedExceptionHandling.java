@@ -73,6 +73,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
         ExceptionResponse response = new ExceptionResponse();
         response.setDateTime(LocalDateTime.now());
         response.setMessage(exception.getMessage());
+        System.out.println(exception.getMessage());
         ResponseEntity<Object> entity = new ResponseEntity<>(response,HttpStatus.FORBIDDEN);
         return entity;
     }

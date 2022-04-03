@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class UserController {
 	private final UserServices userServices;
 	
@@ -34,7 +36,7 @@ public class UserController {
 		return userServices.saveUser(user);
 	}
 	
-	@PostMapping("/get")
+	@GetMapping("/get")
 	public AppUser getUser(Authentication authentication) {
 		String email = authentication.getPrincipal().toString();
 		return userServices.getUser(email);
