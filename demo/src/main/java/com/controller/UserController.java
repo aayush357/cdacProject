@@ -12,10 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.enitity.dto.ConfirmationDTO;
+import com.enitity.dto.UserConfirmationResponseDTO;
 import com.enitity.dto.UserDTO;
 import com.enitity.dto.UserFoodDTO;
+import com.enitity.dto.UserFoodResponseDTO;
 import com.enitity.dto.UserPackageDTO;
+import com.enitity.dto.UserPackageResponseDTO;
 import com.enitity.dto.UserRoomDTO;
+import com.enitity.dto.UserRoomResponseDTO;
 import com.entity.model.classes.AppUser;
 import com.response.dto.FoodsResponse;
 import com.response.dto.PackagesResponse;
@@ -45,6 +49,42 @@ public class UserController {
 	@GetMapping("/getPackages")
 	public List<PackagesResponse> getPackages() {
 		return userServices.packages();
+	}
+	
+	@GetMapping("/getUserPackages")
+	public List<UserPackageResponseDTO> getUserPackages(Authentication authentication ) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.getUserPackages(email);
+	}
+	
+	@PostMapping("/updateUserPackage")
+	public boolean updateUserPackage(Authentication authentication, @RequestBody UserPackageDTO userPackage) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.updateUserPackage(email, userPackage);
+	}
+	
+	@GetMapping("/getUserRooms")
+	public List<UserRoomResponseDTO> getUserRooms(Authentication authentication) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.getUserRooms(email);
+	}
+	
+	@PostMapping("/updateUserRoom")
+	public boolean updateUserRoom(Authentication authentication, @RequestBody UserRoomDTO userRoom) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.updateUserRoom(email, userRoom);
+	}
+	
+	@GetMapping("/getUserFoods")
+	public List<UserFoodResponseDTO> getUserFoods(Authentication authentication ) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.getUserFoods(email);
+	}
+	
+	@PostMapping("/updateUserFood")
+	public boolean updateUserFood(Authentication authentication, @RequestBody UserFoodDTO userFood) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.updateUserFood(email, userFood);
 	}
 	
 	@GetMapping("/getFoods")
@@ -78,11 +118,17 @@ public class UserController {
 		return true;
 	}
 	
+	@PostMapping("/calculateBill")
+	public UserConfirmationResponseDTO calculateBill(Authentication authentication, @RequestBody ConfirmationDTO pckg) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.calculateBill(email, pckg.getBalance());
+		
+	}
+	
 	@PostMapping("/addConfirmation")
 	public boolean addConfirmation(Authentication authentication,@RequestBody ConfirmationDTO pckg) {
 		String email = authentication.getPrincipal().toString();
-		userServices.addConfirmationToUser(email, pckg.getBalance());			
-		return true;
+		return userServices.addConfirmationToUser(email, pckg.getBalance());
 	}
 	
 }

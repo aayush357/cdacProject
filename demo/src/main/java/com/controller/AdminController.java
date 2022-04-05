@@ -27,7 +27,7 @@ import com.service.interfaces.AdminService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin/")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
 	private final AdminService adminService;
@@ -128,6 +128,24 @@ public class AdminController {
 			throw new EntityNotFoundException(AdminEnum.PACKAGESNOTPRESENT.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return packages;
+	}
+	
+	@PostMapping("/updatepackage")
+	public boolean updatePackage(Authentication authentication, @RequestBody PackageDTO pckg) {
+		String adminEmail = authentication.getPrincipal().toString();
+		return adminService.updatePackage(adminEmail, pckg);
+	}
+	
+	@PostMapping("/updateroom")
+	public boolean updateRoom(Authentication authentication, @RequestBody RoomDTO room) {
+		String adminEmail = authentication.getPrincipal().toString();
+		return adminService.updateRoom(adminEmail, room);
+	}
+	
+	@PostMapping("/updatefood")
+	public boolean updateFood(Authentication authentication, @RequestBody FoodDTO food) {
+		String adminEmail = authentication.getPrincipal().toString();
+		return adminService.updateFood(adminEmail, food);
 	}
 
 }

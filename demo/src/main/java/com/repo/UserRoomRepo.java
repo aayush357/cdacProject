@@ -17,6 +17,11 @@ public interface UserRoomRepo extends JpaRepository<UserRoom, UserRoomID>{
 	Optional<UserRoom> findRoomByPackage(@Param("package") String packageName);
 	
 	@Query(
+			value="Select * from select_room as r join select_package as p on r.id=p.select_room_id where p.active=true and r.user_email=:email",
+			nativeQuery = true)
+	Optional<UserRoom> findByActivePackageForConfirmation(@Param("email") String email);
+	
+	@Query(
 			value="select * from select_room as f where f.hotel_name=:hotelName",
 			nativeQuery = true)
 	Optional<UserRoom> findUserRoomByName(@Param("hotelName") String hotelName);

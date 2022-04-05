@@ -17,6 +17,10 @@ public interface AdminService {
 	void addPackageToAdmin(String adminName, String packageName);
 
 	List<Package> getPackages(String adminEmail);
+	
+	public boolean updatePackage(String adminEmail, PackageDTO pckg);
+	public boolean updateFood(String adminEmail, FoodDTO food);
+	public boolean updateRoom(String adminEmail, RoomDTO room);
 
 	List<Food> getFood(String adminEmail);
 

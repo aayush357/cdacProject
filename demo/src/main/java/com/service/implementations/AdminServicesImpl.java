@@ -123,6 +123,33 @@ public class AdminServicesImpl implements AdminService {
 				() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
 		return pckg;
 	}
+	
+	public boolean updatePackage(String adminEmail, PackageDTO pckg) {
+		Package pkg = packageRepo.findPackageByNameAndAdminName(pckg.getPackageName(), adminEmail).orElseThrow(
+				() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+		pkg.setDays(pckg.getDays());
+		pkg.setPrice(pckg.getPrice());
+		packageRepo.save(pkg);
+		return true;
+	}
+	
+	public boolean updateRoom(String adminEmail, RoomDTO room) {
+		Room r = roomRepo.findRoomByAdminNameandHotelName(adminEmail, room.getHotelName()).orElseThrow(
+				() -> new EntityNotFoundException(AdminEnum.ROOMNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+		r.setPrice(room.getPrice());
+		r.setSize(room.getSize());
+		roomRepo.save(r);
+		return true;
+	}
+	
+	public boolean updateFood(String adminEmail, FoodDTO food) {
+		Food f = foodRepo.findFoodByAdminNameandFoodName(adminEmail, food.getName()).orElseThrow(
+				() -> new EntityNotFoundException(AdminEnum.FOODNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+		f.setCost(food.getCost());
+		f.setType(food.getType());
+		foodRepo.save(f);
+		return true;
+	}
 
 	@Override
 	public Food getFood(String FoodName, String adminEmail) {
