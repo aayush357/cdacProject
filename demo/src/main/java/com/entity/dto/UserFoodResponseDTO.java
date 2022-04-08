@@ -1,6 +1,4 @@
-package com.enitity.dto;
-
-import java.sql.Date;
+package com.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,12 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPackageResponseDTO {
+public class UserFoodResponseDTO {
 	private String name;
-	private String place;
-	private int numberOfPersons;
-	private Date startDate;
-	private boolean active;
-	private double cost;
+	private String type;
+	private int quantity;
 	private String adminEmail;
+	private boolean active;
 }

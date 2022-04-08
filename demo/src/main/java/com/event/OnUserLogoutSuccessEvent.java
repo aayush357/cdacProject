@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.enitity.dto.LogOutRequest;
+import com.entity.dto.LogOutRequest;
 
 import lombok.Getter;
 import lombok.Setter;

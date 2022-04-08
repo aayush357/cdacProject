@@ -7,9 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.enitity.dto.FoodDTO;
-import com.enitity.dto.PackageDTO;
-import com.enitity.dto.RoomDTO;
+import com.entity.dto.FoodDTO;
+import com.entity.dto.PackageDTO;
+import com.entity.dto.ResetDTO;
+import com.entity.dto.RoomDTO;
 import com.entity.enums.AdminEnum;
 import com.entity.enums.DTOEnum;
 import com.entity.enums.LoginEnum;
@@ -46,6 +47,23 @@ public class AdminServicesImpl implements AdminService {
 		return adminRepo.save(admin);
 	}
 
+	public boolean resetPassword(ResetDTO resetData) {
+		Admin admin = adminRepo.findByEmail(resetData.getEmail()).orElseThrow(
+				() -> new EntityNotFoundException(AdminEnum.ADMINNOTFOUND.toString(), HttpStatus.UNAUTHORIZED));
+		admin.setPassword(passwordEncoder.encode(resetData.getPassword()));
+		adminRepo.save(admin);
+		return true;
+	}
+	
+	public boolean getLink(String email) {
+		Admin admin = adminRepo.findByEmail(email).orElseThrow(
+				() -> new EntityNotFoundException(AdminEnum.ADMINNOTFOUND.toString(), HttpStatus.UNAUTHORIZED));
+		String subject = "Password Reset Link";
+		String body = "Link for Password Reset is: http://localhost:3000/adminReset";
+		MailService.sendFromGMail(email, subject, body);
+		return true;
+	}
+	
 	@Override
 	public Admin getAdmin(String username) {
 		return adminRepo.findByEmail(username).orElseThrow(

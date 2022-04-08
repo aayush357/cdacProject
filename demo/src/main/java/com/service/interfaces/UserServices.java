@@ -3,14 +3,15 @@ package com.service.interfaces;
 import java.sql.Date;
 import java.util.List;
 
-import com.enitity.dto.UserConfirmationResponseDTO;
-import com.enitity.dto.UserDTO;
-import com.enitity.dto.UserFoodDTO;
-import com.enitity.dto.UserFoodResponseDTO;
-import com.enitity.dto.UserPackageDTO;
-import com.enitity.dto.UserPackageResponseDTO;
-import com.enitity.dto.UserRoomDTO;
-import com.enitity.dto.UserRoomResponseDTO;
+import com.entity.dto.ResetDTO;
+import com.entity.dto.UserConfirmationResponseDTO;
+import com.entity.dto.UserDTO;
+import com.entity.dto.UserFoodDTO;
+import com.entity.dto.UserFoodResponseDTO;
+import com.entity.dto.UserPackageDTO;
+import com.entity.dto.UserPackageResponseDTO;
+import com.entity.dto.UserRoomDTO;
+import com.entity.dto.UserRoomResponseDTO;
 import com.entity.model.classes.AppUser;
 import com.entity.model.classes.UserFood;
 import com.entity.model.classes.UserRoom;
@@ -19,6 +20,9 @@ import com.response.dto.PackagesResponse;
 import com.response.dto.RoomsResponse;
 
 public interface UserServices {
+	
+	public boolean getLink(String email);
+	public boolean resetPassword(ResetDTO resetData);
 
 	void addUserRoom(UserRoom r);
 

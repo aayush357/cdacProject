@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.enitity.dto.AdminDTO;
-import com.enitity.dto.FoodDTO;
-import com.enitity.dto.PackageDTO;
-import com.enitity.dto.RoomDTO;
+import com.entity.dto.AdminDTO;
+import com.entity.dto.FoodDTO;
+import com.entity.dto.PackageDTO;
+import com.entity.dto.ResetDTO;
+import com.entity.dto.RoomDTO;
 import com.entity.enums.AdminEnum;
 import com.entity.model.classes.Admin;
 import com.entity.model.classes.Food;
@@ -39,6 +40,16 @@ public class AdminController {
 				null);
 		adminService.saveAdmin(admin);
 		return true;
+	}
+	
+	@PostMapping("/updatePassLink")
+	public boolean updatePassword(@RequestBody ResetDTO email) {
+		return adminService.getLink(email.getEmail());
+	}
+	
+	@PostMapping("/updatePassword")
+	public boolean resetPassword(@RequestBody ResetDTO email) {
+		return adminService.resetPassword(email);
 	}
 
 //	@PostMapping("/delete")

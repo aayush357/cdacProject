@@ -1,4 +1,4 @@
-package com.enitity.dto;
+package com.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserFoodResponseDTO {
+public class UserPackageDTO {
 	private String name;
-	private String type;
-	private int quantity;
-	private String adminEmail;
+	private String place;
+	private int numberOfPersons;
 	private boolean active;
+	private String adminEmail;
 }

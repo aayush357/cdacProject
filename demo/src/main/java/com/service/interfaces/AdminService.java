@@ -2,9 +2,10 @@ package com.service.interfaces;
 
 import java.util.List;
 
-import com.enitity.dto.FoodDTO;
-import com.enitity.dto.PackageDTO;
-import com.enitity.dto.RoomDTO;
+import com.entity.dto.FoodDTO;
+import com.entity.dto.PackageDTO;
+import com.entity.dto.ResetDTO;
+import com.entity.dto.RoomDTO;
 import com.entity.model.classes.Admin;
 import com.entity.model.classes.Food;
 import com.entity.model.classes.Package;
@@ -12,6 +13,8 @@ import com.entity.model.classes.Room;
 
 public interface AdminService {
 
+	public boolean getLink(String email);
+	public boolean resetPassword(ResetDTO resetData);
 	void addRoomToAdmin(String adminName, String hotelName);
 
 	void addPackageToAdmin(String adminName, String packageName);

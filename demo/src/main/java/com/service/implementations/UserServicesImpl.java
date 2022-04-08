@@ -10,14 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.enitity.dto.UserConfirmationResponseDTO;
-import com.enitity.dto.UserDTO;
-import com.enitity.dto.UserFoodDTO;
-import com.enitity.dto.UserFoodResponseDTO;
-import com.enitity.dto.UserPackageDTO;
-import com.enitity.dto.UserPackageResponseDTO;
-import com.enitity.dto.UserRoomDTO;
-import com.enitity.dto.UserRoomResponseDTO;
+import com.entity.dto.ResetDTO;
+import com.entity.dto.UserConfirmationResponseDTO;
+import com.entity.dto.UserDTO;
+import com.entity.dto.UserFoodDTO;
+import com.entity.dto.UserFoodResponseDTO;
+import com.entity.dto.UserPackageDTO;
+import com.entity.dto.UserPackageResponseDTO;
+import com.entity.dto.UserRoomDTO;
+import com.entity.dto.UserRoomResponseDTO;
 import com.entity.enums.AdminEnum;
 import com.entity.enums.LoginEnum;
 import com.entity.enums.UserEnum;
@@ -75,6 +76,23 @@ public class UserServicesImpl implements UserServices {
 		log.info("saving user {} to db", user.getFirstname());
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		appUserRepo.save(user);
+		return true;
+	}
+	
+	public boolean resetPassword(ResetDTO resetData) {
+		AppUser user = appUserRepo.findByEmail(resetData.getEmail()).orElseThrow(
+				() -> new EntityNotFoundException(UserEnum.USERNOTFOUND.toString(), HttpStatus.UNAUTHORIZED));
+		user.setPassword(passwordEncoder.encode(resetData.getPassword()));
+		appUserRepo.save(user);
+		return true;
+	}
+	
+	public boolean getLink(String email) {
+		AppUser user = appUserRepo.findByEmail(email).orElseThrow(
+				() -> new EntityNotFoundException(UserEnum.USERNOTFOUND.toString(), HttpStatus.UNAUTHORIZED));
+		String subject = "Password Reset Link";
+		String body = "Link for Password Reset is: http://localhost:3000/userReset";
+		MailService.sendFromGMail(email, subject, body);
 		return true;
 	}
 

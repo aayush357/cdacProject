@@ -1,4 +1,4 @@
-package com.enitity.dto;
+package com.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminDTO {
-	private String email;
-	private String password;
-	private int mobNo;
-	private String role;
+public class PackageDTO {
+	private String packageName;
+	private String place;
+	private double price;	
+	private int days;
 }

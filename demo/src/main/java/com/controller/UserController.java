@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.enitity.dto.ConfirmationDTO;
-import com.enitity.dto.UserConfirmationResponseDTO;
-import com.enitity.dto.UserDTO;
-import com.enitity.dto.UserFoodDTO;
-import com.enitity.dto.UserFoodResponseDTO;
-import com.enitity.dto.UserPackageDTO;
-import com.enitity.dto.UserPackageResponseDTO;
-import com.enitity.dto.UserRoomDTO;
-import com.enitity.dto.UserRoomResponseDTO;
+import com.entity.dto.ConfirmationDTO;
+import com.entity.dto.ResetDTO;
+import com.entity.dto.UserConfirmationResponseDTO;
+import com.entity.dto.UserDTO;
+import com.entity.dto.UserFoodDTO;
+import com.entity.dto.UserFoodResponseDTO;
+import com.entity.dto.UserPackageDTO;
+import com.entity.dto.UserPackageResponseDTO;
+import com.entity.dto.UserRoomDTO;
+import com.entity.dto.UserRoomResponseDTO;
 import com.entity.model.classes.AppUser;
 import com.response.dto.FoodsResponse;
 import com.response.dto.PackagesResponse;
@@ -38,6 +39,16 @@ public class UserController {
 	@PostMapping("/add")
 	public boolean addUser(@RequestBody UserDTO user) {
 		return userServices.saveUser(user);
+	}
+	
+	@PostMapping("/updatePassLink")
+	public boolean updatePassword(@RequestBody ResetDTO email) {
+		return userServices.getLink(email.getEmail());
+	}
+	
+	@PostMapping("/updatePassword")
+	public boolean resetPassword(@RequestBody ResetDTO email) {
+		return userServices.resetPassword(email);
 	}
 	
 	@GetMapping("/get")

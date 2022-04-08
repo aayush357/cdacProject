@@ -1,4 +1,4 @@
-package com.enitity.dto;
+package com.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPackageDTO {
-	private String name;
-	private String place;
-	private int numberOfPersons;
-	private boolean active;
+public class UserRoomResponseDTO {
+	private String hotelName;
+	private String type;
+	private String size;
 	private String adminEmail;
+	private boolean active;
 }

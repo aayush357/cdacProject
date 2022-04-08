@@ -39,12 +39,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors();
-		http.authorizeHttpRequests().antMatchers("/user/add").permitAll();
+		http.authorizeHttpRequests().antMatchers("/user/add", "/user/updatePassLink", "/user/updatePassword", "/admin/updatePassLink", "/admin/updatePassword").permitAll();
 		CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
 		customAuthenticationFilter.setFilterProcessesUrl("/api/login");
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**","/admin/add", "/user/add").permitAll();
+		http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**","/admin/add", "/user/add", "/user/updatePassLink", "/user/updatePassword", "/admin/updatePassLink", "/admin/updatePassword").permitAll();
 		http.authorizeRequests().antMatchers(HttpMethod.PUT,"/api/logout").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
 		http.authorizeRequests().antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN");
 		http.authorizeRequests().antMatchers("/user/**","/api/users/**").hasAnyAuthority("ROLE_USER");

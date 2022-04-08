@@ -13,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.enitity.dto.LogOutRequest;
+import com.entity.dto.LogOutRequest;
+import com.entity.dto.RefreshDTO;
 import com.entity.enums.LoginEnum;
 import com.entity.model.classes.AppUser;
 import com.event.OnUserLogoutSuccessEvent;
@@ -54,15 +56,27 @@ public class LoginController {
 		return ResponseEntity.ok(new ApiReponse(true, LoginEnum.LOGGEDOUT.toString()));
 	}
 
-	@GetMapping("/token/refresh")
-	public ResponseEntity<Map<String, String>> refreshToken(HttpServletRequest request, HttpServletResponse response){
+//	@GetMapping("/token/refresh")
+//	public ResponseEntity<Map<String, String>> refreshToken(HttpServletRequest request, HttpServletResponse response){
+//		String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+//		ResponseEntity<Map<String, String>> result = null;
+//		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+//			result = jwtProvider.generateRefreshToken(authorizationHeader, loginService, request);
+//			return result;
+//		}
+//		throw new TokenNotFoundException(LoginEnum.TOKENNOTFOUND.toString(), HttpStatus.FORBIDDEN);
+//	}
+
+	@PostMapping("/token/refresh")
+	public ResponseEntity<Map<String, String>> refreshToken(HttpServletRequest request, HttpServletResponse response, @RequestBody RefreshDTO refresh){
 		String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 		ResponseEntity<Map<String, String>> result = null;
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-			result = jwtProvider.generateRefreshToken(authorizationHeader, loginService, request);
+			result = jwtProvider.generateRefreshToken(refresh.getRefreshToken(), loginService, request);
 			return result;
 		}
 		throw new TokenNotFoundException(LoginEnum.TOKENNOTFOUND.toString(), HttpStatus.FORBIDDEN);
 	}
 
+	
 }

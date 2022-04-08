@@ -1,4 +1,4 @@
-package com.enitity.dto;
+package com.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,13 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class AdminDTO {
 	private String email;
-	private String aadhar;
-	private String lastname;
-	private String firstname;
-	private long mobile;
-	private String gender;
 	private String password;
-	private String address;
+	private int mobNo;
+	private String role;
 }

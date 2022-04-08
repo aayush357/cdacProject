@@ -1,4 +1,4 @@
-package com.enitity.dto;
+package com.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,11 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class RoomDTO {
-	String hotelName;
-	String type;
-	String size;
-	Double price;
+@NoArgsConstructor
+public class ResetDTO {
+	private String email;
+	private String password;
 }
