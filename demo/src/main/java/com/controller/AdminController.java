@@ -2,6 +2,8 @@ package com.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +36,7 @@ public class AdminController {
 	private final AdminService adminService;
 	
 	@PostMapping("/add")
-	public boolean addAdmin(@RequestBody AdminDTO adminDTO) {
+	public boolean addAdmin(@Valid @RequestBody AdminDTO adminDTO) {
 		Role r = new Role(1L, "ROLE_ADMIN");
 		Admin admin = new Admin(adminDTO.getEmail(), adminDTO.getPassword(), adminDTO.getMobNo(), r, null, null, null,
 				null);
@@ -58,21 +60,21 @@ public class AdminController {
 //	}
 
 	@PostMapping("/addpackage")
-	public boolean addPackage(Authentication authentication, @RequestBody PackageDTO pckg) {
+	public boolean addPackage(Authentication authentication,@Valid  @RequestBody PackageDTO pckg) {
 		String adminEmail = authentication.getPrincipal().toString();
 		adminService.addPackage(pckg, adminEmail);
 		return true;
 	}
 
 	@PostMapping("/addroom")
-	public boolean addRoom(Authentication authentication, @RequestBody RoomDTO room) {
+	public boolean addRoom(Authentication authentication,@Valid  @RequestBody RoomDTO room) {
 		String adminEmail = authentication.getPrincipal().toString();
 		adminService.addRoom(room, adminEmail);
 		return true;
 	}
 
 	@PostMapping("/addfood")
-	public boolean addFood(Authentication authentication, @RequestBody FoodDTO food) {
+	public boolean addFood(Authentication authentication,@Valid  @RequestBody FoodDTO food) {
 		String adminEmail = authentication.getPrincipal().toString();
 		adminService.addFood(food, adminEmail);
 		return true;
@@ -89,7 +91,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/food")
-	public Food getFood(Authentication authentication, @RequestParam("foodName") String foodName) {
+	public Food getFood(Authentication authentication,@Valid  @RequestParam("foodName") String foodName) {
 		String adminEmail = authentication.getPrincipal().toString();
 		Food food = adminService.getFood(foodName, adminEmail);
 		if (food == null) {
@@ -100,7 +102,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/package")
-	public Package getPackage(Authentication authentication, @RequestParam("packageName") String packageName) {
+	public Package getPackage(Authentication authentication,@Valid  @RequestParam("packageName") String packageName) {
 		String adminEmail = authentication.getPrincipal().toString();
 		Package pckg = adminService.getPackage(packageName, adminEmail);
 		if (pckg == null) {
@@ -111,7 +113,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/room")
-	public Room getRoom(Authentication authentication, @RequestParam("hotelName") String hotelName) {
+	public Room getRoom(Authentication authentication,@Valid  @RequestParam("hotelName") String hotelName) {
 		String adminEmail = authentication.getPrincipal().toString();
 		Room room = adminService.getRoom(hotelName, adminEmail);
 		if (room == null) {
@@ -142,19 +144,19 @@ public class AdminController {
 	}
 	
 	@PostMapping("/updatepackage")
-	public boolean updatePackage(Authentication authentication, @RequestBody PackageDTO pckg) {
+	public boolean updatePackage(Authentication authentication,@Valid  @RequestBody PackageDTO pckg) {
 		String adminEmail = authentication.getPrincipal().toString();
 		return adminService.updatePackage(adminEmail, pckg);
 	}
 	
 	@PostMapping("/updateroom")
-	public boolean updateRoom(Authentication authentication, @RequestBody RoomDTO room) {
+	public boolean updateRoom(Authentication authentication,@Valid  @RequestBody RoomDTO room) {
 		String adminEmail = authentication.getPrincipal().toString();
 		return adminService.updateRoom(adminEmail, room);
 	}
 	
 	@PostMapping("/updatefood")
-	public boolean updateFood(Authentication authentication, @RequestBody FoodDTO food) {
+	public boolean updateFood(Authentication authentication,@Valid  @RequestBody FoodDTO food) {
 		String adminEmail = authentication.getPrincipal().toString();
 		return adminService.updateFood(adminEmail, food);
 	}

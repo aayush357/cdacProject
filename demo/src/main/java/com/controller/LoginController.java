@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
@@ -49,7 +50,7 @@ public class LoginController {
 
 	@PutMapping("/logout")
 	public ResponseEntity<ApiReponse> logoutUser(@AuthenticationPrincipal String currentUser,
-			@RequestBody LogOutRequest logOutRequest) {
+			@Valid @RequestBody LogOutRequest logOutRequest) {
 		OnUserLogoutSuccessEvent logoutSuccessEvent = new OnUserLogoutSuccessEvent(currentUser,
 				logOutRequest.getToken(), logOutRequest);
 		applicationEventPublisher.publishEvent(logoutSuccessEvent);
@@ -68,7 +69,7 @@ public class LoginController {
 //	}
 
 	@PostMapping("/token/refresh")
-	public ResponseEntity<Map<String, String>> refreshToken(HttpServletRequest request, HttpServletResponse response, @RequestBody RefreshDTO refresh){
+	public ResponseEntity<Map<String, String>> refreshToken(HttpServletRequest request, HttpServletResponse response,@Valid  @RequestBody RefreshDTO refresh){
 		String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 		ResponseEntity<Map<String, String>> result = null;
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {

@@ -51,7 +51,7 @@ public class JwtProvider{
 	public String jwtCreateAccessToken(User user, Algorithm algorithm, HttpServletRequest request) {
 		String access_token = JWT.create()
 							.withSubject(user.getUsername())
-							.withExpiresAt(new Date(System.currentTimeMillis() + 5*1000))//for 5 minutes 5*60*1000 
+							.withExpiresAt(new Date(System.currentTimeMillis() + 5*60*1000))//for 5 minutes 5*60*1000 or is for 5 sec 5*1000 
 							.withIssuer(request.getRequestURL().toString())
 							.withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
 							.sign(algorithm);
@@ -62,7 +62,7 @@ public class JwtProvider{
 	public String jwtCreateRefreshToken(User user, Algorithm algorithm, HttpServletRequest request) {
 		String refresh_token = JWT.create()
 							.withSubject(user.getUsername())
-							.withExpiresAt(new Date(System.currentTimeMillis() + 10*1000))//for 20 minutes 20*60*1000 
+							.withExpiresAt(new Date(System.currentTimeMillis() + 20*60*1000))//for 20 minutes 20*60*1000 or is for 10sec 10*1000
 							.withIssuer(request.getRequestURL().toString())
 							.sign(algorithm);
 		

@@ -1,6 +1,6 @@
 package com.service.interfaces;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import com.entity.dto.ResetDTO;
@@ -25,7 +25,9 @@ public interface UserServices {
 	public boolean resetPassword(ResetDTO resetData);
 
 	void addUserRoom(UserRoom r);
-
+	public boolean deleteFood(String userName);
+	public boolean deleteRoom(String userName);
+	public boolean deletePackage(String userName);
 	List<UserPackageResponseDTO> getUserPackages(String userName);
 
 	public boolean updateUserPackage(String userEmail, UserPackageDTO pckg);

@@ -1,8 +1,9 @@
 package com.service.implementations;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -33,6 +34,7 @@ import com.entity.model.classes.UserFood;
 import com.entity.model.classes.UserPackage;
 import com.entity.model.classes.UserRoom;
 import com.exception.ActivePackageNotFoundException;
+import com.exception.EntityAlreadyPresentException;
 import com.exception.EntityNotFoundException;
 import com.repo.AdminRepo;
 import com.repo.AppUserRepo;
@@ -78,7 +80,7 @@ public class UserServicesImpl implements UserServices {
 		appUserRepo.save(user);
 		return true;
 	}
-	
+
 	public boolean resetPassword(ResetDTO resetData) {
 		AppUser user = appUserRepo.findByEmail(resetData.getEmail()).orElseThrow(
 				() -> new EntityNotFoundException(UserEnum.USERNOTFOUND.toString(), HttpStatus.UNAUTHORIZED));
@@ -86,7 +88,7 @@ public class UserServicesImpl implements UserServices {
 		appUserRepo.save(user);
 		return true;
 	}
-	
+
 	public boolean getLink(String email) {
 		AppUser user = appUserRepo.findByEmail(email).orElseThrow(
 				() -> new EntityNotFoundException(UserEnum.USERNOTFOUND.toString(), HttpStatus.UNAUTHORIZED));
@@ -107,6 +109,34 @@ public class UserServicesImpl implements UserServices {
 		return appUserRepo.findAll();
 	}
 
+	public boolean deletePackage(String userName) {
+		UserPackage pckg = userPackageRepo.findByActivePackageForConfirmation(userName)
+				.orElseThrow(() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
+		userPackageRepo.delete(pckg);
+		return true;
+	}
+
+	public boolean deleteFood(String userName) {
+		UserPackage pckg = userPackageRepo.findByActivePackageForConfirmation(userName)
+				.orElseThrow(() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
+		UserFood food = pckg.getUserFood();
+		pckg.setUserFood(null);
+		userFoodRepo.delete(food);
+		return true;
+	}
+
+	public boolean deleteRoom(String userName) {
+		UserPackage pckg = userPackageRepo.findByActivePackageForConfirmation(userName)
+				.orElseThrow(() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
+		UserRoom room = pckg.getUserRoom();
+		pckg.setUserRoom(null);
+		userRoomRepo.delete(room);
+		return true;
+	}
+
 	@Override
 	public void addRoleToUser(String username, String roleName) {
 		AppUser user = appUserRepo.findByEmail(username).orElseThrow(
@@ -116,66 +146,70 @@ public class UserServicesImpl implements UserServices {
 		user.setRole(role);
 	}
 
-	public List<UserPackageResponseDTO> getUserPackages(String userName){
+	public List<UserPackageResponseDTO> getUserPackages(String userName) {
 		List<UserPackage> pckgs = userPackageRepo.findAll();
 		List<UserPackageResponseDTO> pckgsResponse = new ArrayList<>();
 		for (UserPackage p : pckgs) {
-			Package pckg = packageRepo.findPackageByName(p.getName()).orElseThrow(
-					() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
-			UserPackageResponseDTO pr = new UserPackageResponseDTO(p.getName(), p.getPlace(), p.getNumberOfPersons(), p.getDate(), p.isActive(), pckg.getPrice(), p.getUserAdminName().getEmail());
+			Package pckg = packageRepo.findPackageByName(p.getName())
+					.orElseThrow(() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(),
+							HttpStatus.INTERNAL_SERVER_ERROR));
+			UserPackageResponseDTO pr = new UserPackageResponseDTO(p.getName(), p.getPlace(), p.getNumberOfPersons(),
+					p.getDate(), p.isActive(), pckg.getPrice(), p.getUserAdminName().getEmail());
 			pckgsResponse.add(pr);
 		}
 		return pckgsResponse;
 	}
-	
-	public boolean updateUserPackage(String userEmail, UserPackageDTO pckg){
-		UserPackage userPackage = userPackageRepo.findByActivePackageForConfirmation(userEmail).orElseThrow(
-				() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
-						HttpStatus.NOT_ACCEPTABLE));
+
+	public boolean updateUserPackage(String userEmail, UserPackageDTO pckg) {
+		UserPackage userPackage = userPackageRepo.findByActivePackageForConfirmation(userEmail)
+				.orElseThrow(() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		userPackage.setNumberOfPersons(pckg.getNumberOfPersons());
 		userPackageRepo.save(userPackage);
 		return true;
 	}
-	
-	public List<UserRoomResponseDTO> getUserRooms(String userName){
+
+	public List<UserRoomResponseDTO> getUserRooms(String userName) {
 		List<UserRoom> rooms = userRoomRepo.findAll();
 		List<UserRoomResponseDTO> pckgsResponse = new ArrayList<>();
 		for (UserRoom r : rooms) {
-			UserRoomResponseDTO pr = new UserRoomResponseDTO(r.getHotelName(), r.getType(), r.getSize(), r.getUserPackage().getUserAdminName().getEmail(), r.getUserPackage().isActive());
+			UserRoomResponseDTO pr = new UserRoomResponseDTO(r.getHotelName(), r.getType(), r.getSize(),
+					r.getUserPackage().getUserAdminName().getEmail(), r.getUserPackage().isActive());
 			pckgsResponse.add(pr);
 		}
 		return pckgsResponse;
 	}
-	
-	public boolean updateUserRoom(String userEmail, UserRoomDTO room){
-		UserRoom userRoom = userRoomRepo.findByActivePackageForConfirmation(userEmail).orElseThrow(
-				() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
-						HttpStatus.NOT_ACCEPTABLE));
+
+	public boolean updateUserRoom(String userEmail, UserRoomDTO room) {
+		UserRoom userRoom = userRoomRepo.findByActivePackageForConfirmation(userEmail)
+				.orElseThrow(() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		userRoom.setSize(room.getSize());
 		userRoom.setType(room.getType());
 		userRoomRepo.save(userRoom);
 		return true;
 	}
-	
-	public List<UserFoodResponseDTO> getUserFoods(String userName){
+
+	public List<UserFoodResponseDTO> getUserFoods(String userName) {
 		List<UserFood> foods = userFoodRepo.findAll();
 		List<UserFoodResponseDTO> foodsResponse = new ArrayList<>();
 		for (UserFood f : foods) {
-			UserFoodResponseDTO pr = new UserFoodResponseDTO(f.getName(),f.getType(),f.getQuantity(), f.getUserPackage().getUserAdminName().getEmail(), f.getUserPackage().isActive());
+			UserFoodResponseDTO pr = new UserFoodResponseDTO(f.getName(), f.getType(), f.getQuantity(),
+					f.getUserPackage().getUserAdminName().getEmail(), f.getUserPackage().isActive());
 			foodsResponse.add(pr);
 		}
 		return foodsResponse;
 	}
-	
-	public boolean updateUserFood(String userEmail, UserFoodDTO userFood){
-		UserFood food = userFoodRepo.findByActivePackageForConfirmation(userEmail).orElseThrow(
-				() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
-						HttpStatus.NOT_ACCEPTABLE));
+
+	public boolean updateUserFood(String userEmail, UserFoodDTO userFood) {
+		UserFood food = userFoodRepo.findByActivePackageForConfirmation(userEmail)
+				.orElseThrow(() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		food.setQuantity(userFood.getQuantity());
 		userFoodRepo.save(food);
 		return true;
 	}
-	
+
 	@Override
 	public void addUserToRole(String roleName, String username) {
 		Role role = roleRepo.findByName(roleName).orElseThrow(
@@ -197,30 +231,39 @@ public class UserServicesImpl implements UserServices {
 
 	@Override
 	public void addUserPackagewithAdminandAppUser(UserPackageDTO pckg, String userEmail, Date date) {
-		AppUser appUser = appUserRepo.findByEmail(userEmail).orElseThrow(
-				() -> new EntityNotFoundException(UserEnum.USERNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
-		Package optPckg = packageRepo.findPackageByNameAndAdminName(pckg.getName(), pckg.getAdminEmail()).orElseThrow(
-				() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
-		Package pckgOriginal = optPckg;
-		Admin admin = adminRepo.findByEmail(pckg.getAdminEmail()).orElseThrow(
-				() -> new EntityNotFoundException(AdminEnum.ADMINNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
-		UserPackage p = new UserPackage(pckgOriginal.getPackageName(), pckgOriginal.getPlace(), date,
-				pckg.getNumberOfPersons(), true, appUser, pckgOriginal.getAdminName(), null, null, null);
-		userPackageRepo.save(p);
-		appUser.getUserPackage().add(p);
-		admin.getUserPackages().add(p);
+		Optional<UserPackage> userPckg = userPackageRepo.findByActivePackageForConfirmation(userEmail);
+		if (userPckg.isEmpty()) {
+			AppUser appUser = appUserRepo.findByEmail(userEmail)
+					.orElseThrow(() -> new EntityNotFoundException(UserEnum.USERNOTFOUND.toString(),
+							HttpStatus.INTERNAL_SERVER_ERROR));
+			Package optPckg = packageRepo.findPackageByNameAndAdminName(pckg.getName(), pckg.getAdminEmail())
+					.orElseThrow(() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(),
+							HttpStatus.INTERNAL_SERVER_ERROR));
+			Package pckgOriginal = optPckg;
+			Admin admin = adminRepo.findByEmail(pckg.getAdminEmail())
+					.orElseThrow(() -> new EntityNotFoundException(AdminEnum.ADMINNOTFOUND.toString(),
+							HttpStatus.INTERNAL_SERVER_ERROR));
+			UserPackage p = new UserPackage(pckgOriginal.getPackageName(), pckgOriginal.getPlace(), date,
+					pckg.getNumberOfPersons(), true, appUser, pckgOriginal.getAdminName(), null, null, null);
+			userPackageRepo.save(p);
+			appUser.getUserPackage().add(p);
+			admin.getUserPackages().add(p);
+		} else {
+			throw new EntityAlreadyPresentException(UserEnum.ACTIVEPACKAGEALREADYPRESENT.toString(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Override
-	public void addRoomToUser(UserRoomDTO room, String userEmail){
+	public void addRoomToUser(UserRoomDTO room, String userEmail) {
 		AppUser user = appUserRepo.findByEmail(userEmail).orElseThrow(
 				() -> new EntityNotFoundException(UserEnum.USERNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
-		Room optRoom = roomRepo.findRoomByAdminNameandHotelName(room.getAdminEmail(), room.getHotelName())
-				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.ROOMNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+		Room optRoom = roomRepo.findRoomByAdminNameandHotelName(room.getAdminEmail(), room.getHotelName()).orElseThrow(
+				() -> new EntityNotFoundException(AdminEnum.ROOMNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
 		Room roomOri = optRoom;
 		UserPackage userPackage = userPackageRepo.findByActivePackageForRoom(userEmail, room.getAdminEmail())
-				.orElseThrow(
-						() -> new EntityNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+				.orElseThrow(() -> new EntityNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		if (userPackage != null) {
 			UserRoom userRoom = new UserRoom(roomOri.getHotelName(), roomOri.getType(), roomOri.getSize(), user);
 			userPackage.setUserRoom(userRoom);
@@ -228,26 +271,29 @@ public class UserServicesImpl implements UserServices {
 //			userPackage.setUserRoom(userRoom);
 		} else {
 			System.out.println("please select a package first");
-			throw new ActivePackageNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(), HttpStatus.NOT_ACCEPTABLE);
+			throw new ActivePackageNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@Override
-	public void addFoodToUser(UserFoodDTO food, String userEmail){
+	public void addFoodToUser(UserFoodDTO food, String userEmail) {
 		AppUser user = appUserRepo.findByEmail(userEmail).orElseThrow(
 				() -> new EntityNotFoundException(UserEnum.USERNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
 		Food optFood = foodRepo.findFoodByName(food.getName()).orElseThrow(
 				() -> new EntityNotFoundException(AdminEnum.FOODNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
 		Food foodOri = optFood;
-		UserPackage userPackage = userPackageRepo.findByActivePackageForFood(userEmail).orElseThrow(
-				() -> new EntityNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+		UserPackage userPackage = userPackageRepo.findByActivePackageForFood(userEmail)
+				.orElseThrow(() -> new EntityNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		if (userPackage != null) {
 			UserFood userFood = new UserFood(foodOri.getName(), foodOri.getType(), food.getQuantity(), user);
 			userPackage.setUserFood(userFood);
 			user.getUserFood().add(userFood);
 		} else {
 			System.out.println("please select a package first");
-			throw new ActivePackageNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(), HttpStatus.NOT_ACCEPTABLE);
+			throw new ActivePackageNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -287,57 +333,62 @@ public class UserServicesImpl implements UserServices {
 	}
 
 	public UserConfirmationResponseDTO calculateBill(String userEmail, Double balance) {
-		UserPackage optUserPackage = userPackageRepo.findByActivePackageForConfirmation(userEmail).orElseThrow(
-				() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
+		UserPackage optUserPackage = userPackageRepo.findByActivePackageForConfirmation(userEmail)
+				.orElseThrow(() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
 						HttpStatus.NOT_ACCEPTABLE));
 		UserPackage p = optUserPackage;
-		Package pckg = packageRepo.findPackageByName(p.getName()).orElseThrow(
-				() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+		Package pckg = packageRepo.findPackageByName(p.getName())
+				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		Double pckgCost = pckg.getPrice();
 		UserFood userFood = p.getUserFood();
 		int foodQuantity = userFood.getQuantity();
 		Food food = foodRepo.findFoodByAdminNameandFoodName(p.getUserAdminName().getEmail(), userFood.getName())
-				.orElseThrow(
-						() -> new EntityNotFoundException(AdminEnum.FOODNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.FOODNOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		Double foodCost = food.getCost();
 		Double foodPrice = foodQuantity * foodCost;
 		UserRoom userRoom = p.getUserRoom();
 		Room room = roomRepo.findRoomByAdminNameandHotelName(p.getUserAdminName().getEmail(), userRoom.getHotelName())
-				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.ROOMNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.ROOMNOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		Double roomCost = room.getPrice();
 		Double total = roomCost + foodPrice + pckgCost;
-		UserConfirmationResponseDTO response = new UserConfirmationResponseDTO(p.getName(),p.getPlace(), pckgCost, roomCost, foodPrice, total, userFood.getName(), userRoom.getHotelName());
+		UserConfirmationResponseDTO response = new UserConfirmationResponseDTO(p.getName(), p.getPlace(), pckgCost,
+				roomCost, foodPrice, total, userFood.getName(), userRoom.getHotelName());
 		return response;
 	}
-	
+
 	@Override
 	public boolean addConfirmationToUser(String userEmail, Double balance) {
-		UserPackage optUserPackage = userPackageRepo.findByActivePackageForConfirmation(userEmail).orElseThrow(
-				() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
-						HttpStatus.NOT_ACCEPTABLE));
+		UserPackage optUserPackage = userPackageRepo.findByActivePackageForConfirmation(userEmail)
+				.orElseThrow(() -> new ActivePackageNotFoundException(UserEnum.ACTIVEPACKAGENOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		UserPackage p = optUserPackage;
-		Package pckg = packageRepo.findPackageByName(p.getName()).orElseThrow(
-				() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+		Package pckg = packageRepo.findPackageByName(p.getName())
+				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.PACKAGENOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		Double pckgCost = pckg.getPrice();
 		UserFood userFood = p.getUserFood();
 		int foodQuantity = userFood.getQuantity();
 		Food food = foodRepo.findFoodByAdminNameandFoodName(p.getUserAdminName().getEmail(), userFood.getName())
-				.orElseThrow(
-						() -> new EntityNotFoundException(AdminEnum.FOODNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.FOODNOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		Double foodCost = food.getCost();
 		Double foodPrice = foodQuantity * foodCost;
 		UserRoom userRoom = p.getUserRoom();
 		Room room = roomRepo.findRoomByAdminNameandHotelName(p.getUserAdminName().getEmail(), userRoom.getHotelName())
-				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.ROOMNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
+				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.ROOMNOTFOUND.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR));
 		Double roomCost = room.getPrice();
 		Double total = roomCost + foodPrice + pckgCost;
 		ConfirmationPackage confirmationPackage = new ConfirmationPackage(p.getName(), p.getPlace(), pckgCost, roomCost,
 				foodPrice, total, balance);
 		p.setActive(false);
 		p.setConfirmationPackage(confirmationPackage);
-		
+
 		String subject = "Confirmation Mail for Your Payment";
-		String body = "You Have been charged a total sum of: "+total;
+		String body = "You Have been charged a total sum of: " + total;
 		MailService.sendFromGMail(userEmail, subject, body);
 		return true;
 	}

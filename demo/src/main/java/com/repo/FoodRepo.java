@@ -13,6 +13,8 @@ import com.entity.model.keys.FoodID;
 @Repository
 public interface FoodRepo extends JpaRepository<Food, FoodID>{
 	
+
+	
 	@Query(
 			value="select * from Food as f where f.admin_name=:adminName",
 			nativeQuery = true)
