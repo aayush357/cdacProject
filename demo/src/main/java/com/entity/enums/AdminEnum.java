@@ -10,6 +10,10 @@ public enum AdminEnum {
 	FOODNOTFOUND("No Food Present with This Name"),
 	PACKAGEALREADYPRESENT("Package with This Name is Already Present"),
 	ROOMALREADYPRESENT("Room with This Hotel Name is Already Present"),
+	PACKAGESNOTSELECTED("No User Have Selected Your Packages"),
+	PACKAGESTILLACTIVE("The Package Is Still Active with User"),
+	FOODSTILLACTIVE("The Food Is Still Active with User"),
+	ROOMSTILLACTIVE("The Room Is Still Active with User"),
 	FOODALREADYPRESENT("Room with This Hotel Name is Already Present");
 	
 	String text;

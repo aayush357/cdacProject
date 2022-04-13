@@ -1,5 +1,6 @@
 package com.repo;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +26,9 @@ public interface UserRoomRepo extends JpaRepository<UserRoom, UserRoomID>{
 			value="select * from select_room as f where f.hotel_name=:hotelName",
 			nativeQuery = true)
 	Optional<UserRoom> findUserRoomByName(@Param("hotelName") String hotelName);
+	
+	@Query(
+			value="select * from select_room as f where f.user_email=:email",
+			nativeQuery = true)
+	Optional<List<UserRoom>> findUserRoomByUserEmail(@Param("email") String userEmail);
 }

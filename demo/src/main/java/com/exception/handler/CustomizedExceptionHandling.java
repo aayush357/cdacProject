@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.exception.ActivePackageNotFoundException;
 import com.exception.EntityAlreadyPresentException;
+import com.exception.EntityCannotBeDeleted;
 import com.exception.EntityNotFoundException;
 import com.exception.EntityNullException;
 import com.exception.InvalidTokenRequestException;
@@ -38,6 +39,15 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
 
 	@ExceptionHandler(EntityNullException.class)
 	public ResponseEntity<Object> handleExceptions(EntityNullException exception, WebRequest webRequest) {
+		ExceptionResponse response = new ExceptionResponse();
+		response.setDateTime(LocalDateTime.now());
+		response.setMessage(exception.getMessage());
+		ResponseEntity<Object> entity = new ResponseEntity<>(response, exception.getStatus());
+		return entity;
+	}
+	
+	@ExceptionHandler(EntityCannotBeDeleted.class)
+	public ResponseEntity<Object> handleExceptions(EntityCannotBeDeleted exception, WebRequest webRequest) {
 		ExceptionResponse response = new ExceptionResponse();
 		response.setDateTime(LocalDateTime.now());
 		response.setMessage(exception.getMessage());

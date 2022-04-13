@@ -6,6 +6,7 @@ import com.entity.dto.FoodDTO;
 import com.entity.dto.PackageDTO;
 import com.entity.dto.ResetDTO;
 import com.entity.dto.RoomDTO;
+import com.entity.dto.UserConfirmationResponseDTO;
 import com.entity.model.classes.Admin;
 import com.entity.model.classes.Food;
 import com.entity.model.classes.Package;
@@ -50,5 +51,10 @@ public interface AdminService {
 	void addRoom(RoomDTO room, String adminName);
 
 	void addFood(FoodDTO food, String adminName);
+	
+	public boolean deletePackage(String adminEmail, String pckgName);
+	public boolean deleteRoom(String adminEmail, String roomName);
+	public boolean deleteFood(String adminEmail, String foodName);
+	public List<UserConfirmationResponseDTO> getUsers(String adminEmail);
 
 }

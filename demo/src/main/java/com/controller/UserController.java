@@ -1,6 +1,5 @@
 package com.controller;
 
-import java.sql.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.entity.dto.AppUserDTO;
 import com.entity.dto.ConfirmationDTO;
 import com.entity.dto.ResetDTO;
 import com.entity.dto.UserConfirmationResponseDTO;
@@ -42,6 +42,13 @@ public class UserController {
 	public boolean addUser(@Valid @RequestBody UserDTO user) {
 		return userServices.saveUser(user);
 	}
+	
+	@PostMapping("/updateUser")
+	public boolean updateUser(Authentication authentication, @RequestBody AppUserDTO appUserDTO) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.updateUser(email, appUserDTO);
+	}
+
 
 	@PostMapping("/updatePassLink")
 	public boolean updatePassword(@RequestBody ResetDTO email) {
@@ -64,6 +71,12 @@ public class UserController {
 		return userServices.packages();
 	}
 
+	@GetMapping("/getUsers")
+	public List<UserConfirmationResponseDTO> getUsers(Authentication authentication) {
+		String userEmail = authentication.getPrincipal().toString();
+		return userServices.getUsers(userEmail);
+	}
+	
 	@GetMapping("/getUserPackages")
 	public List<UserPackageResponseDTO> getUserPackages(Authentication authentication) {
 		String email = authentication.getPrincipal().toString();
@@ -119,13 +132,15 @@ public class UserController {
 	}
 
 	@GetMapping("/getFoods")
-	public List<FoodsResponse> getFoods() {
-		return userServices.foods();
+	public List<FoodsResponse> getFoods(Authentication authentication) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.foods(email);
 	}
 
 	@GetMapping("/getRooms")
-	public List<RoomsResponse> getRooms() {
-		return userServices.rooms();
+	public List<RoomsResponse> getRooms(Authentication authentication) {
+		String email = authentication.getPrincipal().toString();
+		return userServices.rooms(email);
 	}
 
 	@PostMapping("/selectPackage")

@@ -1,5 +1,6 @@
 package com.repo;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,9 @@ public interface UserFoodRepo extends JpaRepository<UserFood, UserFoodID>{
 			value="Select * from select_food as f join select_package as p on f.id=p.select_food_id where p.active=true and f.user_email=:email",
 			nativeQuery = true)
 	Optional<UserFood> findByActivePackageForConfirmation(@Param("email") String email);
+	@Query(
+			value="select * from select_food as f where f.user_email=:email",
+			nativeQuery = true)
+	Optional<List<UserFood>> findFoodByUserEmail(@Param("email") String email);
+	
 }

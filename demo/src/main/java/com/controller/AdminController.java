@@ -18,6 +18,7 @@ import com.entity.dto.FoodDTO;
 import com.entity.dto.PackageDTO;
 import com.entity.dto.ResetDTO;
 import com.entity.dto.RoomDTO;
+import com.entity.dto.UserConfirmationResponseDTO;
 import com.entity.enums.AdminEnum;
 import com.entity.model.classes.Admin;
 import com.entity.model.classes.Food;
@@ -65,6 +66,13 @@ public class AdminController {
 		adminService.addPackage(pckg, adminEmail);
 		return true;
 	}
+	
+	@PostMapping("/deletepackage")
+	public boolean deletePackage(Authentication authentication,@Valid  @RequestBody PackageDTO pckg) {
+		String adminEmail = authentication.getPrincipal().toString();
+		adminService.deletePackage(adminEmail, pckg.getPackageName());
+		return true;
+	}
 
 	@PostMapping("/addroom")
 	public boolean addRoom(Authentication authentication,@Valid  @RequestBody RoomDTO room) {
@@ -72,11 +80,25 @@ public class AdminController {
 		adminService.addRoom(room, adminEmail);
 		return true;
 	}
+	
+	@PostMapping("/deleteroom")
+	public boolean deleteRoom(Authentication authentication,@Valid  @RequestBody RoomDTO room) {
+		String adminEmail = authentication.getPrincipal().toString();
+		adminService.deleteRoom(adminEmail, room.getHotelName());
+		return true;
+	}
 
 	@PostMapping("/addfood")
 	public boolean addFood(Authentication authentication,@Valid  @RequestBody FoodDTO food) {
 		String adminEmail = authentication.getPrincipal().toString();
 		adminService.addFood(food, adminEmail);
+		return true;
+	}
+	
+	@PostMapping("/deletefood")
+	public boolean deleteFood(Authentication authentication,@Valid  @RequestBody FoodDTO food) {
+		String adminEmail = authentication.getPrincipal().toString();
+		adminService.deleteFood(adminEmail, food.getName());
 		return true;
 	}
 
@@ -141,6 +163,12 @@ public class AdminController {
 			throw new EntityNotFoundException(AdminEnum.PACKAGESNOTPRESENT.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return packages;
+	}
+	
+	@GetMapping("/getUsers")
+	public List<UserConfirmationResponseDTO> getUsers(Authentication authentication) {
+		String adminEmail = authentication.getPrincipal().toString();
+		return adminService.getUsers(adminEmail);
 	}
 	
 	@PostMapping("/updatepackage")

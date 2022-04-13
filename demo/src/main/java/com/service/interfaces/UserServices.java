@@ -3,6 +3,7 @@ package com.service.interfaces;
 import java.util.Date;
 import java.util.List;
 
+import com.entity.dto.AppUserDTO;
 import com.entity.dto.ResetDTO;
 import com.entity.dto.UserConfirmationResponseDTO;
 import com.entity.dto.UserDTO;
@@ -20,14 +21,20 @@ import com.response.dto.PackagesResponse;
 import com.response.dto.RoomsResponse;
 
 public interface UserServices {
-	
+
 	public boolean getLink(String email);
+	public boolean updateUser(String userEmail, AppUserDTO userDTO);
+
 	public boolean resetPassword(ResetDTO resetData);
 
 	void addUserRoom(UserRoom r);
+
 	public boolean deleteFood(String userName);
+
 	public boolean deleteRoom(String userName);
+
 	public boolean deletePackage(String userName);
+
 	List<UserPackageResponseDTO> getUserPackages(String userName);
 
 	public boolean updateUserPackage(String userEmail, UserPackageDTO pckg);
@@ -59,12 +66,15 @@ public interface UserServices {
 	void addFoodToUser(UserFoodDTO food, String userName);
 
 	boolean addConfirmationToUser(String userName, Double balance);
+
 	public UserConfirmationResponseDTO calculateBill(String userEmail, Double balance);
 
 	public List<PackagesResponse> packages();
 
-	public List<RoomsResponse> rooms();
+	public List<UserConfirmationResponseDTO> getUsers(String userEmail);
+//	public List<RoomsResponse> rooms();
+	public List<RoomsResponse> rooms(String userEmail);
 
-	public List<FoodsResponse> foods();
-
+//	public List<FoodsResponse> foods();
+	public List<FoodsResponse> foods(String userEmail);
 }

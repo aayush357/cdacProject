@@ -26,7 +26,6 @@ public class JwtProvider{
 	private LoggedOutJwtTokenCache loggedOutJwtTokenCache;
 	
 	public void setLoggedOutJwtTokenCache(LoggedOutJwtTokenCache loggedOutJwtTokenCache) {
-		System.out.println("setting cache in jwtProvider");
 		this.loggedOutJwtTokenCache = loggedOutJwtTokenCache;
 	}
 	

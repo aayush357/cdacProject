@@ -1,7 +1,11 @@
 package com.entity.dto;
 
+import java.util.Date;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import com.entity.model.classes.ConfirmationPackage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,4 +33,28 @@ public class UserConfirmationResponseDTO {
 	private String foodName;
 	@NotEmpty
 	private String hotelName;
+	private String firstName;
+	private String email;
+	private Date date;
+	public UserConfirmationResponseDTO(ConfirmationPackage cfg){
+		this.packageName = cfg.getPackageName();
+		this.place = cfg.getPlace();
+		this.foodCost = cfg.getFoodCost();
+		this.totalCost = cfg.getTotal();
+		this.roomCost = cfg.getRoomCost();
+		this.packageCost = cfg.getPackageCost();
+	}
+	public UserConfirmationResponseDTO(@NotEmpty String packageName, @NotEmpty String place,
+			@NotNull double packageCost, @NotNull double roomCost, @NotNull double foodCost, @NotNull double totalCost,
+			@NotEmpty String foodName, @NotEmpty String hotelName) {
+		super();
+		this.packageName = packageName;
+		this.place = place;
+		this.packageCost = packageCost;
+		this.roomCost = roomCost;
+		this.foodCost = foodCost;
+		this.totalCost = totalCost;
+		this.foodName = foodName;
+		this.hotelName = hotelName;
+	}
 }
