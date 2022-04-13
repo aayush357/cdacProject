@@ -6,6 +6,8 @@ public enum UserEnum {
 	ACTIVEPACKAGENOTFOUND("No Active Package Found for User"),
 	ACTIVEPACKAGEALREADYPRESENT("Active Package Already Present"),
 	ROOMNOTSELECTED("User Have not Selected any Room"),
+	ROOMALREADYSELECTED("User Have Already Selected A Room. Please Modify It"),
+	FOODALREADYSELECTED("User Have Already Selected A food. Please Modify It."),
 	CONFIRMATIONNOTFOUND("Confirmation cannot be Verified"),
 	FOODNOTSELECTED("User Have not Selected any Food");
 	String text;
