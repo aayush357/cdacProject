@@ -1,5 +1,6 @@
 package com.entity.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -18,7 +19,8 @@ public class PackageDTO {
 	@NotEmpty
 	private String place;
 	@NotNull
+	@Min(value = 1, message="Value Cannot be less than 1")
 	private double price;	
-	@NotNull
+	@Min(value=1 , message="Value Cannot be less than 1")
 	private int days;
 }

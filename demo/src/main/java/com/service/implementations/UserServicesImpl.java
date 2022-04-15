@@ -455,6 +455,8 @@ public class UserServicesImpl implements UserServices {
 		Double total = roomCost + foodPrice + pckgCost;
 		UserConfirmationResponseDTO response = new UserConfirmationResponseDTO(p.getName(), p.getPlace(), pckgCost,
 				roomCost, foodPrice, total, userFood.getName(), userRoom.getHotelName());
+		response.setQuantity(foodQuantity);
+		response.setFoodPrice(foodCost);
 		return response;
 	}
 
@@ -493,8 +495,12 @@ public class UserServicesImpl implements UserServices {
 		p.setConfirmationPackage(confirmationPackage);
 
 		String subject = "Confirmation Mail for Your Payment";
-		String body = "You Have been charged a total sum of: " + total;
-		MailService.sendFromGMail(userEmail, subject, body);
+		String body1 = "Thank You! Visit Again!";
+		String body2 = "Package Name: "+p.getName()+"\t"+"Package Cost: "+pckgCost+"\n";
+		String body3 = "Hotel Name: "+userRoom.getHotelName()+"\t"+"Room Cost: "+roomCost+"\n";
+		String body4 = "Food Name: "+userFood.getName()+"\t"+"Food Cost: "+foodPrice+"\n";
+		String body = "You Have been charged a total sum of: " + total+"\n";
+		MailService.sendFromGMail(userEmail, subject, body2+body3+body4+body+body1);
 		return true;
 	}
 }

@@ -36,6 +36,8 @@ public class UserConfirmationResponseDTO {
 	private String firstName;
 	private String email;
 	private Date date;
+	private double foodPrice;
+	private int quantity;
 	public UserConfirmationResponseDTO(ConfirmationPackage cfg){
 		this.packageName = cfg.getPackageName();
 		this.place = cfg.getPlace();

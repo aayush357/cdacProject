@@ -48,6 +48,11 @@ public class LoginController {
 		return ResponseEntity.ok().body(userServices.getUsers());
 	}
 
+	@GetMapping("/start")
+	public String start() {
+		return "started";
+	}
+	
 	@PutMapping("/logout")
 	public ResponseEntity<ApiReponse> logoutUser(@AuthenticationPrincipal String currentUser,
 			@Valid @RequestBody LogOutRequest logOutRequest) {

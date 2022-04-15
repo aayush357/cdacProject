@@ -1,5 +1,6 @@
 package com.entity.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -20,5 +21,6 @@ public class RoomDTO {
 	@NotEmpty
 	String size;
 	@NotNull
+	@Min(value=1)
 	Double price;
 }
