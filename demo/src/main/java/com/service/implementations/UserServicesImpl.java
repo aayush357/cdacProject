@@ -72,14 +72,28 @@ public class UserServicesImpl implements UserServices {
 
 	@Override
 	public boolean saveUser(UserDTO userDto) {
-		Role role = new Role(2L, "ROLE_USER");
-		AppUser user = new AppUser(userDto.getEmail(), userDto.getAadhar(), userDto.getLastname(),
-				userDto.getFirstname(), userDto.getMobile(), userDto.getGender(), new Date(System.currentTimeMillis()),
-				userDto.getPassword(), userDto.getAddress(), role, null, null, null);
-		log.info("saving user {} to db", user.getFirstname());
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		appUserRepo.save(user);
-		return true;
+		Optional<AppUser> appUser = appUserRepo.findByAadharcard(userDto.getAadhar());
+		Optional<AppUser> appUser2 = appUserRepo.findByEmail(userDto.getEmail());
+		if (appUser.isEmpty() == true && appUser2.isEmpty() == true) {
+			Optional<Role> role = roleRepo.findByName("ROLE_USER");
+			Role r = null;
+			if(role.isPresent()==true) {
+				r = role.get();
+			} else {
+				r = new Role("ROLE_USER");
+			}
+			AppUser user = new AppUser(userDto.getEmail(), userDto.getAadhar(), userDto.getLastname(),
+					userDto.getFirstname(), userDto.getMobile(), userDto.getGender(), userDto.getPassword(),
+					userDto.getAddress(), r, null, null, null);
+			log.info("saving user {} to db", user.getFirstname());
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			appUserRepo.save(user);
+			return true;
+		} else if (appUser.isEmpty()==false && appUser2.isEmpty()==true) {
+			throw new EntityAlreadyPresentException(UserEnum.USERAADHARALREADYPRESENT.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			throw new EntityAlreadyPresentException(UserEnum.USEREMAILALREADYPRESENT.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	public boolean updateUser(String userEmail, AppUserDTO userDTO) {
@@ -302,8 +316,9 @@ public class UserServicesImpl implements UserServices {
 				System.out.println("please select a package first");
 				throw new ActivePackageNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(),
 						HttpStatus.INTERNAL_SERVER_ERROR);
-			} else if( userPackage.getUserRoom() != null) {
-				throw new EntityAlreadyPresentException(UserEnum.ROOMALREADYSELECTED.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+			} else if (userPackage.getUserRoom() != null) {
+				throw new EntityAlreadyPresentException(UserEnum.ROOMALREADYSELECTED.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
@@ -324,11 +339,12 @@ public class UserServicesImpl implements UserServices {
 			user.getUserFood().add(userFood);
 		} else {
 			if (userPackage == null) {
-			System.out.println("please select a package first");
-			throw new ActivePackageNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-			} else if( userPackage.getUserFood() != null) {
-				throw new EntityAlreadyPresentException(UserEnum.FOODALREADYSELECTED.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+				System.out.println("please select a package first");
+				throw new ActivePackageNotFoundException(UserEnum.PACKAGENOTSELECTED.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			} else if (userPackage.getUserFood() != null) {
+				throw new EntityAlreadyPresentException(UserEnum.FOODALREADYSELECTED.toString(),
+						HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
@@ -496,11 +512,11 @@ public class UserServicesImpl implements UserServices {
 
 		String subject = "Confirmation Mail for Your Payment";
 		String body1 = "Thank You! Visit Again!";
-		String body2 = "Package Name: "+p.getName()+"\t"+"Package Cost: "+pckgCost+"\n";
-		String body3 = "Hotel Name: "+userRoom.getHotelName()+"\t"+"Room Cost: "+roomCost+"\n";
-		String body4 = "Food Name: "+userFood.getName()+"\t"+"Food Cost: "+foodPrice+"\n";
-		String body = "You Have been charged a total sum of: " + total+"\n";
-		MailService.sendFromGMail(userEmail, subject, body2+body3+body4+body+body1);
+		String body2 = "Package Name: " + p.getName() + "\t" + "Package Cost: " + pckgCost + "\n";
+		String body3 = "Hotel Name: " + userRoom.getHotelName() + "\t" + "Room Cost: " + roomCost + "\n";
+		String body4 = "Food Name: " + userFood.getName() + "\t" + "Food Cost: " + foodPrice + "\n";
+		String body = "You Have been charged a total sum of: " + total + "\n";
+		MailService.sendFromGMail(userEmail, subject, body2 + body3 + body4 + body + body1);
 		return true;
 	}
 }

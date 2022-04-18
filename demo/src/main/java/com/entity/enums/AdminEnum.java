@@ -2,6 +2,7 @@ package com.entity.enums;
 
 public enum AdminEnum {
 	ADMINNOTFOUND("Admin with This email not Found"),
+	ADMINALREADYPRESENT("Admin with This email is Already Present in Database"),
 	ROOMNOTFOUND("No Rooms Present"),
 	ROOMSNOTPRESENT("No Rooms with this HotelName Are registered by The Admin"),
 	PACKAGESNOTPRESENT("No Packages Are registered by The Admin"),

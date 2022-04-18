@@ -46,8 +46,6 @@ public class AppUser implements Serializable {
 	private long mobile;
 	@Column(name = "gender")
 	private String gender;
-	@Column(name = "dateOfBirth")
-	private Date DOB;
 	@Column(name = "password")
 	private String password;
 	@Column(name = "address")

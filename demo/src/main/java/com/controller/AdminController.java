@@ -38,10 +38,7 @@ public class AdminController {
 	
 	@PostMapping("/add")
 	public boolean addAdmin(@Valid @RequestBody AdminDTO adminDTO) {
-		Role r = new Role(1L, "ROLE_ADMIN");
-		Admin admin = new Admin(adminDTO.getEmail(), adminDTO.getPassword(), adminDTO.getMobNo(), r, null, null, null,
-				null);
-		adminService.saveAdmin(admin);
+		adminService.saveAdmin(adminDTO);
 		return true;
 	}
 	

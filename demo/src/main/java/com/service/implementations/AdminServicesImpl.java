@@ -1,7 +1,5 @@
 package com.service.implementations;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.entity.dto.AdminDTO;
 import com.entity.dto.FoodDTO;
 import com.entity.dto.PackageDTO;
 import com.entity.dto.ResetDTO;
@@ -18,6 +17,7 @@ import com.entity.dto.UserConfirmationResponseDTO;
 import com.entity.enums.AdminEnum;
 import com.entity.enums.DTOEnum;
 import com.entity.enums.LoginEnum;
+import com.entity.enums.UserEnum;
 import com.entity.model.classes.Admin;
 import com.entity.model.classes.Food;
 import com.entity.model.classes.Package;
@@ -50,9 +50,23 @@ public class AdminServicesImpl implements AdminService {
 	private final UserPackageRepo userPackageRepo;
 
 	@Override
-	public Admin saveAdmin(Admin admin) {
-		admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-		return adminRepo.save(admin);
+	public Admin saveAdmin(AdminDTO adminDTO) {
+		Optional<Admin> adminDB = adminRepo.findByEmail(adminDTO.getEmail());
+		if (adminDB.isEmpty() == true) {
+			Optional<Role> role = roleRepo.findByName("ROLE_ADMIN");
+			Role r = null;
+			if(role.isPresent()==true) {
+				r = role.get();
+			} else {
+				r = new Role("ROLE_ADMIN");
+			}
+			Admin admin = new Admin(adminDTO.getEmail(), adminDTO.getPassword(), adminDTO.getMobNo(), r, null, null,
+					null, null);
+			admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+			return adminRepo.save(admin);
+		} else {
+			throw new EntityAlreadyPresentException(AdminEnum.ADMINALREADYPRESENT.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	public boolean resetPassword(ResetDTO resetData) {

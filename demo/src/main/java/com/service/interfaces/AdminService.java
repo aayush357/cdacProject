@@ -2,6 +2,7 @@ package com.service.interfaces;
 
 import java.util.List;
 
+import com.entity.dto.AdminDTO;
 import com.entity.dto.FoodDTO;
 import com.entity.dto.PackageDTO;
 import com.entity.dto.ResetDTO;
@@ -38,7 +39,7 @@ public interface AdminService {
 
 	void addFoodToAdmin(String adminName, String foodName);
 
-	public Admin saveAdmin(Admin admin);
+	public Admin saveAdmin(AdminDTO adminDTO);
 
 	public Admin getAdmin(String username);
 

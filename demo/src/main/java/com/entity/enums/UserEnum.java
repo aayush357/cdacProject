@@ -2,6 +2,8 @@ package com.entity.enums;
 
 public enum UserEnum {
 	USERNOTFOUND("User with This email not Found"),
+	USEREMAILALREADYPRESENT("User With This Email is already Registered"),
+	USERAADHARALREADYPRESENT("User With This Aadhar Number is already Registered"),
 	PACKAGENOTSELECTED("User Have not Selected any Package"),
 	ACTIVEPACKAGENOTFOUND("No Active Package Found for User"),
 	ACTIVEPACKAGEALREADYPRESENT("Active Package Already Present"),

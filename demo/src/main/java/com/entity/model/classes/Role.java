@@ -15,11 +15,13 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Entity
 @Table(name="role")
 @Data
+@AllArgsConstructor
 public class Role {
 	@Id
 	@Column(name="ID")
@@ -41,9 +43,8 @@ public class Role {
 		super();
 	}
 
-	public Role(Long id, String name) {
+	public Role(String name) {
 		super();
-		this.id = id;
 		this.name = name;
 	}
 

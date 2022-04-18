@@ -15,7 +15,7 @@ public interface AppUserRepo extends JpaRepository<AppUser, AppUserID>{
 	Optional<AppUser> findByEmail(String username);
 	
 	@Query(
-			value="Select u from all_users u where u.aadharcard=:aadhar",
+			value="Select * from all_users as u where u.aadharcard=:aadhar",
 			nativeQuery = true)
 	Optional<AppUser> findByAadharcard(@Param("aadhar") String aadhar);
 	
