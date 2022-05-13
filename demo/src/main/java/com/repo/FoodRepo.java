@@ -20,9 +20,9 @@ public interface FoodRepo extends JpaRepository<Food, FoodID>{
 	Optional<List<Food>> findFoodByAdmin(@Param("adminName") String adminEmail);
 	
 	@Query(
-			value="select * from Food as f where f.name=:foodName",
+			value="select * from Food as f where f.name=:foodName and f.admin_name=:adminName",
 			nativeQuery = true)
-	Optional<Food> findFoodByName(@Param("foodName") String foodName);
+	Optional<Food> findFoodByName(@Param("foodName") String foodName, @Param("adminName") String adminName);
 	
 	@Query(
 			value="select * from Food as f where f.admin_name=:admin",

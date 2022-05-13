@@ -17,7 +17,6 @@ import com.entity.dto.UserConfirmationResponseDTO;
 import com.entity.enums.AdminEnum;
 import com.entity.enums.DTOEnum;
 import com.entity.enums.LoginEnum;
-import com.entity.enums.UserEnum;
 import com.entity.model.classes.Admin;
 import com.entity.model.classes.Food;
 import com.entity.model.classes.Package;
@@ -281,7 +280,7 @@ public class AdminServicesImpl implements AdminService {
 		Admin admin = adminRepo.findByEmail(adminName)
 				.orElseThrow(() -> new EntityNotFoundException(AdminEnum.ADMINNOTFOUND.toString(),
 						HttpStatus.INTERNAL_SERVER_ERROR));
-		Food food = foodRepo.findFoodByName(foodName).orElseThrow(
+		Food food = foodRepo.findFoodByName(foodName, adminName).orElseThrow(
 				() -> new EntityNotFoundException(AdminEnum.FOODNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
 		admin.getFoods().add(food);
 	}

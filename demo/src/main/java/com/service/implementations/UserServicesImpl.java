@@ -327,7 +327,7 @@ public class UserServicesImpl implements UserServices {
 	public void addFoodToUser(UserFoodDTO food, String userEmail) {
 		AppUser user = appUserRepo.findByEmail(userEmail).orElseThrow(
 				() -> new EntityNotFoundException(UserEnum.USERNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
-		Food optFood = foodRepo.findFoodByName(food.getName()).orElseThrow(
+		Food optFood = foodRepo.findFoodByName(food.getName(), food.getAdminEmail()).orElseThrow(
 				() -> new EntityNotFoundException(AdminEnum.FOODNOTFOUND.toString(), HttpStatus.INTERNAL_SERVER_ERROR));
 		Food foodOri = optFood;
 		UserPackage userPackage = userPackageRepo.findByActivePackageForFood(userEmail)
